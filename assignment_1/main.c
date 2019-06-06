@@ -22,7 +22,9 @@ int main(void)
     }
     else
     {
-        printf("Process %d exited with status: %d", pid, childID);
+        printf("Parent PID: %d\n", pid);
+        endID = waitpid(childID, &status, 0);
+        printf("Process %d exited with status: %d", pid, endID);
         exit(EXIT_SUCCESS);
     }
     

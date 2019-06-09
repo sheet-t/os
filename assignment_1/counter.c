@@ -23,8 +23,8 @@ int main(int argc, char *argv[])
         assert(printf("over/under error occured"));
     }
     
-    child_pid=getpid();
-    parent_pid=getppid();
+    assert((child_pid=getpid()) >= 0);
+    assert((parent_pid=getppid()) >= 0);
 
     assert(printf("Child PID: %d\n", child_pid) >= 0);
     assert(printf("Parent PID: %d\n", parent_pid) >= 0);

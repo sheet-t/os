@@ -4,11 +4,13 @@
 #include <unistd.h>
 #include <errno.h>
 #include <sys/wait.h>
+#include <assert.h>
 
 int main(void)
 {
-    int i, status;
-    pid_t childID, endID;
+    int status;
+    pid_t childID;
+    int wait_status;
     int pid=getpid();
 
     if ((childID = fork()) == -1)
@@ -22,9 +24,12 @@ int main(void)
     }
     else
     {
-        printf("Parent PID: %d\n", pid);
-        endID = waitpid(childID, &status, 0);
-        printf("Process %d exited with status: %d", pid, endID);
+        assert(waitpid(childID, &status, 0) >= 0);
+        if (WIFEXITED(status))
+        {
+            assert(printf("Process %d exited with status: %d\n", childID, 
+                WEXITSTATUS(status)) >= 0);
+        }
         exit(EXIT_SUCCESS);
     }
     

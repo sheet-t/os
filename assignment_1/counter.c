@@ -1,17 +1,35 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <assert.h>
+#include <sys/types.h>
+#include <errno.h>
 
 int main(int argc, char *argv[])
 {
-    int p_id, p_pid;
-    char *a;
-    long int end = strtol(argv[1], &a, 10);
-    p_id=getpid();
-
-    printf("Child PID: %d\n", p_id);
-    for (int i = 1; i<=end; ++i)
-        printf("Process: %d %d\n", p_id, i);
+    pid_t child_pid;
+    pid_t parent_pid;
+    char *loop_count;
     
-    return 0;
+    if (argc < 2)
+    {
+        assert(printf("Error: no count suppied") >= 0);
+        exit(EXIT_FAILURE);
+    }
+    
+    long int end = strtol(argv[1], &loop_count, 10);
+    if (errno == ERANGE)
+    {
+        assert(printf("over/under error occured"));
+    }
+    
+    child_pid=getpid();
+    parent_pid=getppid();
+
+    assert(printf("Child PID: %d\n", child_pid) >= 0);
+    assert(printf("Parent PID: %d\n", parent_pid) >= 0);
+    for (int i = 1; i<=end; i++)
+        assert(printf("Process: %d: %d\n", child_pid, i) >= 0);
+    
+    exit((int)end);
 }
